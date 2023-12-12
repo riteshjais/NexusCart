@@ -10,11 +10,15 @@ import com.nexus.cart.service.ProductService;
 import com.nexus.cart.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -94,8 +98,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(int productId, Product product) {
-    return null;
-
+        Product existingProduct=getProductById(productId);
+        existingProduct.setBrand(product.getBrand());
+        existingProduct.setCategory(product.getCategory());
+        existingProduct.setColour(product.getColour());
+        existingProduct.setDescription(product.getDescription());
+        existingProduct.setCreatedAt(product.getCreatedAt());
+        existingProduct.setDiscountedPrice(product.getDiscountedPrice());
+        existingProduct.setDiscountPercentage(product.getDiscountPercentage());
+        existingProduct.setPrice(product.getPrice());
+        existingProduct.setImageUrl(product.getImageUrl());
+        existingProduct.setQuantity(product.getQuantity());
+        existingProduct.setNumRatings(product.getNumRatings());
+        return productRepository.save(existingProduct);
     }
 
     @Override
@@ -117,6 +132,24 @@ public class ProductServiceImpl implements ProductService {
                                        List<String> sizes, int minPrice, int maxPrice,
                                        int minDiscount, String sort, String stock,
                                        int pageNumber, int pageSize) {
-        return null;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        List<Product> products = productRepository.filterProduct(category, minPrice, maxPrice, minDiscount, sort);
+        if (!colours.isEmpty()) {
+            products = products.stream().filter(p ->
+                    colours.stream().anyMatch(c -> c.equalsIgnoreCase(p.getColour()))
+            ).collect(Collectors.toList());
+        }
+        if (stock != null) {
+            if (stock.equals("in_stock")) {
+                products = products.stream().filter(p -> p.getQuantity() > 0).collect(Collectors.toList());
+            } else if (stock.equals("out_of_stock")) {
+                products = products.stream().filter(p -> p.getQuantity() < 1).collect(Collectors.toList());
+            }
+        }
+        int startIndex=(int) pageable.getOffset();
+        int endIndex=Math.min(startIndex+pageable.getPageSize(),products.size());
+        List<Product> pageContent=products.subList(startIndex,endIndex);
+        Page<Product> filteredProduct=new PageImpl<>(pageContent,pageable,products.size());
+        return filteredProduct;
     }
 }
