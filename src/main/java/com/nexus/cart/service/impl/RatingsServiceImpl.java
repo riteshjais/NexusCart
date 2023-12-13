@@ -8,10 +8,12 @@ import com.nexus.cart.repository.RatingsRepository;
 import com.nexus.cart.service.ProductService;
 import com.nexus.cart.service.RatingsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class RatingsServiceImpl implements RatingsService {
 
     private RatingsRepository ratingsRepository;

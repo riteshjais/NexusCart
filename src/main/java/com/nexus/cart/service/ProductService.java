@@ -18,6 +18,7 @@ public interface ProductService {
                                        List<String> sizes, int minPrice, int maxPrice,
                                        int minDiscount,String sort,String stock,
                                        int pageNumber,int pageSize);
+    public List<Product> findAllProduct();
 
 
 }

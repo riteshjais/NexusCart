@@ -12,7 +12,10 @@ public interface OrderService {
     public Order findOrderById(int orderId);
     public List<Order> userOrderHistory(int userId);
     public Order placedOrder(int orderId);
+    public Order confirmedOrder(int orderId);
     public Order shippedOrder(int orderId);
     public Order deliveredOrder(int orderId);
     public Order canceledOrder(int orderId);
+    public List<Order> getAllOrders();
+    public void deletedOrderByOrderId(Integer orderId);
 }
