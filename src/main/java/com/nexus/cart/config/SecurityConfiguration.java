@@ -13,6 +13,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
+import static com.nexus.cart.entity.enums.Permission.*;
+import static com.nexus.cart.entity.enums.Role.ADMIN;
+import static com.nexus.cart.entity.enums.Role.CUSTOMER;
+import static org.springframework.http.HttpMethod.*;
+import static org.springframework.http.HttpMethod.PUT;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -26,6 +32,8 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        String adminUrl="/api/v1/admin/**";
+        String customerUrl="/api/v1/users/**";
         http
                 .csrf()
                 .disable()
@@ -42,6 +50,16 @@ public class SecurityConfiguration {
                         "/webjars/**",
                         "swagger-ui.html")
                 .permitAll()
+                .requestMatchers(adminUrl).hasRole(ADMIN.name())
+                .requestMatchers(GET,adminUrl).hasAuthority(ADMIN_READ.name())
+                .requestMatchers(POST,adminUrl).hasAuthority(ADMIN_CREATE.name())
+                .requestMatchers(DELETE,adminUrl).hasAuthority(ADMIN_DELETE.name())
+                .requestMatchers(PUT,adminUrl).hasAuthority(ADMIN_UPDATE.name())
+                .requestMatchers(customerUrl).hasRole(CUSTOMER.name())
+                .requestMatchers(GET,customerUrl).hasAuthority(CUSTOMER_READ.name())
+                .requestMatchers(POST,customerUrl).hasAuthority(CUSTOMER_CREATE.name())
+                .requestMatchers(DELETE,customerUrl).hasAuthority(CUSTOMER_DELETE.name())
+                .requestMatchers(PUT,customerUrl).hasAuthority(CUSTOMER_UPDATE.name())
                 .anyRequest()
                 .authenticated()
                 .and()

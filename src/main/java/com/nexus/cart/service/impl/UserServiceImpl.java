@@ -31,7 +31,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserProfileByJwt(String jwt) {
+        System.out.println(jwt);
         String email=jwtService.extractUserName(jwt);
+        System.out.println(email);
         Optional<User> user=userRepository.findByEmail(email);
         if(user.isEmpty())
             throw new EntityNotFoundException("User Not Found ");

@@ -35,7 +35,7 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
     @Column(name="mobile_number")
-    private String mobile_number;
+    private String mobileNumber;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "role")
@@ -53,20 +53,20 @@ public class User implements UserDetails {
     @CollectionTable(name="payment_information", joinColumns = @JoinColumn(name = "user_id"))
     private List<PaymentInformation> paymentInformation=new ArrayList<>();
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Rating> rating=new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Review> reviews=new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Ratings> rating=new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Reviews> reviews=new ArrayList<>();
 
 
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return role.getAuthorities();
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/ratings")
+@RequestMapping("/api/v1/users/ratings")
 public class RatingsController {
     private UserService userService;
     private RatingsService ratingsService;
